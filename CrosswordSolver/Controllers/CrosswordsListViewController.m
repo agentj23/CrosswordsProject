@@ -12,12 +12,15 @@
 #import "ActivityIndicatorView.h"
 #import "PersistenceManager.h"
 
+#define ShortestWordLenght 4
+
 @interface CrosswordsListViewController()
 @property (nonatomic, strong)  NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) ActivityIndicatorView *activityIndicatorView;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) NSArray *filteredList;
 @property (nonatomic, strong) NSFetchRequest *searchFetchRequest;
+@property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 
 @end
 
@@ -266,6 +269,16 @@
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption
 {
+    // Trim the text being displayed in the search bar's text field
+    // if the selected word lenght is smaller than a text cuurently
+    // being displayed in the search bar's text field.
+    NSString *searchText = controller.searchBar.text;
+    NSInteger currentWordLength = searchOption + ShortestWordLenght;
+    if (searchText.length > currentWordLength) {
+        searchText = [searchText substringToIndex:currentWordLength];
+        controller.searchBar.text = searchText;
+    }
+    
     [self searchWithText:controller.searchBar.text andScope:searchOption];
 
     return YES;
@@ -273,11 +286,12 @@
 
 - (NSPredicate*)searchPredicateWithSearchString:(NSString*)searchString andScopeButtonIndex:(NSInteger)buttonIndex
 {
-    NSUInteger wordLength = buttonIndex + 4;
+    NSUInteger wordLength = buttonIndex + ShortestWordLenght;
     NSString *searchStringWithWildcards = searchString;
+    NSInteger missingCharsNumber = wordLength - searchString.length;
     
     // Add wildcards for the missing characters.
-    for (int i=0; i< wordLength - searchString.length; i++) {
+    for (NSInteger i=0; i< missingCharsNumber; i++) {
         searchStringWithWildcards = [searchStringWithWildcards stringByAppendingString:@"?"];
     }
     
@@ -312,6 +326,50 @@
             NSLog(@"searchFetchRequest failed: %@",[error localizedDescription]);
         }
     }
+}
+
+#pragma mark -
+
+#pragma mark UISearchBarDelegate ==
+
+#pragma mark -
+
+
+- (BOOL)searchBar:(UISearchBar *)searchBar shouldChangeTextInRange:(NSRange)range replacementText:(NSString
+                                                        *)text
+{
+    // Add this checking to all other should type methods ... 
+    if ((searchBar.text.length >= searchBar.selectedScopeButtonIndex + ShortestWordLenght) && (![@"" isEqualToString:text])) {
+        return NO;
+    }
+    /*
+     
+     Accept only the letters and the following characters: "*" "?".
+     
+     */
+    
+    NSCharacterSet *alphaSet = [NSCharacterSet letterCharacterSet];
+    
+    NSCharacterSet *specialCharacters = [NSCharacterSet
+                                         
+                                         characterSetWithCharactersInString:@"*?"];
+    
+    NSString *trimmedString = [text stringByTrimmingCharactersInSet:alphaSet];
+    
+    trimmedString = [trimmedString
+                     
+                     stringByTrimmingCharactersInSet:specialCharacters];
+    
+    NSLog(@"KAMIL LOG, trimmed string: %@", trimmedString);
+    
+    if ([trimmedString isEqualToString:@""]) {
+        
+        return YES;
+        
+    }
+    
+    return NO;
+    
 }
 
 

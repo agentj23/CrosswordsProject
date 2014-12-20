@@ -11,4 +11,5 @@
 
 @interface CrosswordsListViewController : UITableViewController <NSFetchedResultsControllerDelegate, UISearchDisplayDelegate, UISearchBarDelegate>
 
+
 @end

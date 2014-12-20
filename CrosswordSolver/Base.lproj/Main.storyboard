@@ -43,7 +43,7 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Crosswords" id="q9G-XE-Uib"/>
                     <connections>
-                        <outlet property="searchDisplayController" destination="zFM-P3-xAB" id="KxC-iX-zqY"/>
+                        <outlet property="searchBar" destination="12h-s6-myu" id="uLV-HT-cQn"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a3J-V6-qxP" userLabel="First Responder" sceneMemberID="firstResponder"/>
