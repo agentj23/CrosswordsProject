@@ -6,6 +6,17 @@
 //  Copyright (c) 2014 Kamil Czopek. All rights reserved.
 //
 
+/* TODO List
+ 1. Add help button - explain how to use the app (*, ? chars 
+    and the special characters - specific for the language -
+    treated as basic alphabet.
+ 2. Add i18n - Croosswords -> Krzyżówki
+ 3. Improve the UI - table, help screen (consider blur), refresh controll
+ 4. Update the database
+
+ 
+ */
+
 #import "AppDelegate.h"
 #import "CrosswordsListViewController.h"
 #import "Crossword+CoreData_CRUD.h"
